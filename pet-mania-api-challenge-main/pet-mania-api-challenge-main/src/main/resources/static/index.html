@@ -1,0 +1,712 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Mania | Adoção de Pets</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #fffaf3;
+            color: #343044;
+        }
+
+        header {
+            background: #7656d6;
+            color: white;
+            padding: 22px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #ffe27a;
+        }
+
+        header p {
+            font-size: 14px;
+        }
+
+        .hero {
+            padding: 55px 8%;
+            background: #f1eaff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            color: #7656d6;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #655d73;
+            line-height: 1.6;
+            max-width: 520px;
+        }
+
+        .hero-icon {
+            font-size: 100px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .section-title h2 {
+            font-size: 26px;
+            color: #7656d6;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: .9;
+        }
+
+        .btn-primary {
+            background: #7656d6;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #ffcf65;
+            color: #493700;
+        }
+
+        .btn-delete {
+            background: #ff7777;
+            color: white;
+        }
+
+        .pets-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 22px;
+        }
+
+        .pet-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(80, 60, 120, .09);
+            border: 1px solid #eee8f8;
+        }
+
+        .pet-card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            background: #eee8f8;
+        }
+
+        .pet-info {
+            padding: 18px;
+        }
+
+        .pet-info h3 {
+            color: #7656d6;
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .pet-info p {
+            color: #777;
+            font-size: 14px;
+            margin: 7px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e8f8e9;
+            color: #27813b;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .badge.indisponivel {
+            background: #ffe5e5;
+            color: #c33;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .card-actions button {
+            flex: 1;
+            padding: 9px 5px;
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 20, 50, .65);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px;
+            border-radius: 18px;
+        }
+
+        .modal-content h2 {
+            color: #7656d6;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ddd5ec;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #7656d6;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-buttons button {
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: #eee;
+            color: #555;
+        }
+
+        #mensagem {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+            grid-column: 1 / -1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #7656d6;
+            color: white;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 35px 6%;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .hero-icon {
+                font-size: 65px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🐾 Pet<span>Mania</span></div>
+    <p>Todo pet merece uma família! ❤️</p>
+</header>
+
+<section class="hero">
+    <div>
+        <h1>Amor de quatro patas!</h1>
+        <p>
+            Conheça nossos amiguinhos, cadastre novos animais
+            e ajude cada pet a encontrar um lar cheio de amor.
+        </p>
+    </div>
+
+    <div class="hero-icon">🐶🐱</div>
+</section>
+
+<main>
+
+    <div class="section-title">
+        <h2>🐾 Nossos amiguinhos</h2>
+
+        <button class="btn btn-primary" onclick="abrirModal()">
+            + Cadastrar pet
+        </button>
+    </div>
+
+    <div id="mensagem"></div>
+
+    <section class="pets-container" id="listaPets">
+        <div class="empty">
+            Carregando nossos amiguinhos...
+        </div>
+    </section>
+
+</main>
+
+<!-- MODAL DE CADASTRO E EDIÇÃO -->
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+
+        <h2 id="tituloModal">🐶 Cadastrar novo pet</h2>
+
+        <form id="formPet">
+
+            <input type="hidden" id="id">
+
+            <div class="form-group">
+                <label for="nome">Nome do pet</label>
+                <input type="text" id="nome" required
+                       placeholder="Ex.: Bob">
+            </div>
+
+            <div class="form-group">
+                <label for="especie">Espécie</label>
+                <select id="especie" required>
+                    <option value="">Selecione</option>
+                    <option value="Cachorro">Cachorro</option>
+                    <option value="Gato">Gato</option>
+                    <option value="Coelho">Coelho</option>
+                    <option value="Pássaro">Pássaro</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="raca">Raça</label>
+                <input type="text" id="raca"
+                       placeholder="Ex.: Golden Retriever">
+            </div>
+
+            <div class="form-group">
+                <label for="idade">Idade (anos)</label>
+                <input type="number" id="idade" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sexo">Sexo</label>
+                <select id="sexo" required>
+                    <option value="">Selecione</option>
+                    <option value="Macho">Macho</option>
+                    <option value="Fêmea">Fêmea</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="porte">Porte</label>
+                <select id="porte" required>
+                    <option value="">Selecione</option>
+                    <option value="Pequeno">Pequeno</option>
+                    <option value="Médio">Médio</option>
+                    <option value="Grande">Grande</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="personalidade">Personalidade</label>
+                <textarea id="personalidade"
+                          placeholder="Ex.: Brincalhão e carinhoso"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="foto">URL da foto</label>
+                <input type="url" id="foto"
+                       placeholder="https://exemplo.com/foto.jpg">
+            </div>
+
+            <div class="form-group">
+                <label for="disponivel">Disponível para adoção?</label>
+                <select id="disponivel" required>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">
+                    Salvar pet
+                </button>
+
+                <button type="button"
+                        class="btn btn-cancel"
+                        onclick="fecharModal()">
+                    Cancelar
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<footer>
+    🐾 Pet Mania — Espalhando amor e encontrando lares! ❤️
+</footer>
+
+<script>
+
+    // ENDEREÇO DA API
+    const API_URL = "http://localhost:8080/api/pets";
+
+    const listaPets = document.getElementById("listaPets");
+    const modal = document.getElementById("modal");
+    const formPet = document.getElementById("formPet");
+    const mensagem = document.getElementById("mensagem");
+
+    // GET - BUSCAR TODOS OS PETS
+    async function listarPets() {
+
+        try {
+
+            const resposta = await fetch(API_URL);
+
+            if (!resposta.ok) {
+                throw new Error("Erro ao buscar os pets.");
+            }
+
+            const pets = await resposta.json();
+
+            exibirPets(pets);
+
+        } catch (erro) {
+
+            console.error(erro);
+
+            listaPets.innerHTML = `
+                    <div class="empty">
+                        <h3>Ops! Não conseguimos carregar os pets. 🐾</h3>
+                        Verifique se sua API está funcionando.
+                    </div>
+                `;
+        }
+    }
+
+    // EXIBIR OS PETS NA TELA
+    function exibirPets(pets) {
+
+        listaPets.innerHTML = "";
+
+        if (pets.length === 0) {
+            listaPets.innerHTML = `
+                    <div class="empty">
+                        <h3>Nenhum pet cadastrado ainda! 🐶</h3>
+                        Seja o primeiro a cadastrar um amiguinho.
+                    </div>
+                `;
+            return;
+        }
+
+        pets.forEach(pet => {
+
+            const card = document.createElement("div");
+            card.className = "pet-card";
+
+            const foto = pet.foto ||
+                "https://placehold.co/400x300/f1eaff/7656d6?text=Pet+Mania";
+
+            card.innerHTML = `
+                    <img src="${foto}" alt="Foto de ${pet.nome}"
+                         onerror="this.src='https://placehold.co/400x300/f1eaff/7656d6?text=Pet+Mania'">
+
+                    <div class="pet-info">
+
+                        <h3>🐾 ${pet.nome}</h3>
+
+                        <p><strong>Espécie:</strong> ${pet.especie}</p>
+                        <p><strong>Raça:</strong> ${pet.raca || "Não informada"}</p>
+                        <p><strong>Idade:</strong> ${pet.idade} anos</p>
+                        <p><strong>Sexo:</strong> ${pet.sexo}</p>
+                        <p><strong>Porte:</strong> ${pet.porte}</p>
+                        <p><strong>Personalidade:</strong> ${pet.personalidade || "Não informada"}</p>
+
+                        <span class="badge ${pet.disponivel ? "" : "indisponivel"}">
+                            ${pet.disponivel ? "Disponível para adoção" : "Indisponível"}
+                        </span>
+
+                        <div class="card-actions">
+
+                            <button class="btn btn-edit"
+                                onclick="editarPet(${pet.id})">
+                                ✏️ Editar
+                            </button>
+
+                            <button class="btn btn-delete"
+                                onclick="excluirPet(${pet.id})">
+                                🗑️ Excluir
+                            </button>
+
+                        </div>
+
+                    </div>
+                `;
+
+            listaPets.appendChild(card);
+
+        });
+    }
+
+    // ABRIR MODAL
+    function abrirModal() {
+
+        formPet.reset();
+
+        document.getElementById("id").value = "";
+        document.getElementById("tituloModal").textContent =
+            "🐶 Cadastrar novo pet";
+
+        modal.style.display = "flex";
+    }
+
+    // FECHAR MODAL
+    function fecharModal() {
+        modal.style.display = "none";
+    }
+
+    // POST - CADASTRAR PET
+    // PUT - ATUALIZAR PET
+    formPet.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const id = document.getElementById("id").value;
+
+        const pet = {
+            nome: document.getElementById("nome").value,
+            especie: document.getElementById("especie").value,
+            raca: document.getElementById("raca").value,
+            idade: Number(document.getElementById("idade").value),
+            sexo: document.getElementById("sexo").value,
+            porte: document.getElementById("porte").value,
+            personalidade: document.getElementById("personalidade").value,
+            foto: document.getElementById("foto").value,
+            disponivel: document.getElementById("disponivel").value === "true"
+        };
+
+        try {
+
+            let resposta;
+
+            if (id) {
+
+                // PUT - ATUALIZAR
+                resposta = await fetch(`${API_URL}/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(pet)
+                });
+
+            } else {
+
+                // POST - CADASTRAR
+                resposta = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(pet)
+                });
+
+            }
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível salvar o pet.");
+            }
+
+            mostrarMensagem(
+                id ? "Pet atualizado com sucesso! 🐾" :
+                    "Pet cadastrado com sucesso! ❤️"
+            );
+
+            fecharModal();
+
+            listarPets();
+
+        } catch (erro) {
+
+            console.error(erro);
+            mostrarMensagem(erro.message);
+
+        }
+
+    });
+
+    // BUSCAR PET PARA EDIÇÃO
+    async function editarPet(id) {
+
+        try {
+
+            const resposta = await fetch(`${API_URL}/${id}`);
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível buscar o pet.");
+            }
+
+            const pet = await resposta.json();
+
+            document.getElementById("id").value = pet.id;
+            document.getElementById("nome").value = pet.nome;
+            document.getElementById("especie").value = pet.especie;
+            document.getElementById("raca").value = pet.raca || "";
+            document.getElementById("idade").value = pet.idade;
+            document.getElementById("sexo").value = pet.sexo;
+            document.getElementById("porte").value = pet.porte;
+            document.getElementById("personalidade").value =
+                pet.personalidade || "";
+            document.getElementById("foto").value = pet.foto || "";
+            document.getElementById("disponivel").value =
+                String(pet.disponivel);
+
+            document.getElementById("tituloModal").textContent =
+                "✏️ Editar informações do pet";
+
+            modal.style.display = "flex";
+
+        } catch (erro) {
+
+            mostrarMensagem(erro.message);
+
+        }
+
+    }
+
+    // DELETE - EXCLUIR PET
+    async function excluirPet(id) {
+
+        const confirmar = confirm(
+            "Tem certeza que deseja excluir este pet?"
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+        try {
+
+            const resposta = await fetch(`${API_URL}/${id}`, {
+                method: "DELETE"
+            });
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível excluir o pet.");
+            }
+
+            mostrarMensagem("Pet excluído com sucesso! 🐾");
+
+            listarPets();
+
+        } catch (erro) {
+
+            console.error(erro);
+            mostrarMensagem(erro.message);
+
+        }
+
+    }
+
+    // EXIBIR MENSAGENS
+    function mostrarMensagem(texto) {
+
+        mensagem.textContent = texto;
+
+        setTimeout(() => {
+            mensagem.textContent = "";
+        }, 4000);
+
+    }
+
+    // CARREGAR PETS AO ABRIR A PÁGINA
+    listarPets();
+
+</script>
+
+</body>
+</html>
